@@ -1,0 +1,25 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: "reports"
+  devtools:
+    add-properties: false
+  profiles:
+    include: null
+
+aws:
+  dynamodb:
+    endpoint: "http://localhost:8000"
+
+springdoc:
+  swagger-ui:
+    path: "/api/doc/swagger-ui.html"
+  api-docs:
+    path: "/api/doc/api-docs"
+
+security:
+  jwt:
+    keys-location:
+      public: "${JWT_PUBLIC_KEY:classpath:keys/public_key.pem}"
