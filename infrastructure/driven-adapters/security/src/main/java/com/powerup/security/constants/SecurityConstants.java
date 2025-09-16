@@ -10,8 +10,9 @@ public class SecurityConstants {
 
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String CLAIM_ROLE = "role";
-    public static final String ROLE_CLIENT = "CLIENT";
-    public static final String ROLE_ADVISOR = "ADVISOR";
+    public static final String ROLE_ADMIN = "ADMIN";
+
+    public static final String REPORTS_URL = "/api/v1/reports";
 
     public static final String[] PUBLIC_SWAGGER_PATHS = {
             "/api/doc/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
