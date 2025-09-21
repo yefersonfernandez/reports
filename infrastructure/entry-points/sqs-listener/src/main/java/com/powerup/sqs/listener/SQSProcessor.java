@@ -11,7 +11,7 @@ import software.amazon.awssdk.services.sqs.model.Message;
 import java.util.function.Function;
 
 @Slf4j
-@Service
+@Service("approvedLoanQueueProcessor")
 @RequiredArgsConstructor
 public class SQSProcessor implements Function<Message, Mono<Void>> {
 

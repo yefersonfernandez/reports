@@ -3,6 +3,7 @@ package com.powerup.usecase.report;
 import com.powerup.model.approvedloan.ApprovedLoan;
 import com.powerup.model.approvedloan.gateways.IApprovedLoanRepositoryPort;
 import com.powerup.model.report.Report;
+import com.powerup.model.report.gateways.IEmailSenderPort;
 import com.powerup.model.report.gateways.IReportRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,8 @@ class ReportUseCaseTest {
     private IReportRepositoryPort reportRepositoryPort;
     @Mock
     private IApprovedLoanRepositoryPort approvedLoanRepositoryPort;
+    @Mock
+    private IEmailSenderPort emailSenderPort;
 
     @InjectMocks
     private ReportUseCase reportUseCase;
@@ -97,5 +100,29 @@ class ReportUseCaseTest {
 
         StepVerifier.create(reportUseCase.updateReportOnLoanApproved(approvedLoan))
                 .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Must send report email when report exists")
+    void testSendReportEmailWhenReportExists() {
+        when(reportRepositoryPort.findReport()).thenReturn(Mono.just(existingReport));
+        when(emailSenderPort.sendEmail(any())).thenReturn(Mono.empty());
+
+        StepVerifier.create(reportUseCase.sendReportEmail())
+                .verifyComplete();
+
+        verify(emailSenderPort).sendEmail(any());
+    }
+
+    @Test
+    @DisplayName("Must send report email when no report exists (build empty report)")
+    void testSendReportEmailWhenNoReportExists() {
+        when(reportRepositoryPort.findReport()).thenReturn(Mono.empty());
+        when(emailSenderPort.sendEmail(any())).thenReturn(Mono.empty());
+
+        StepVerifier.create(reportUseCase.sendReportEmail())
+                .verifyComplete();
+
+        verify(emailSenderPort).sendEmail(any());
     }
 }

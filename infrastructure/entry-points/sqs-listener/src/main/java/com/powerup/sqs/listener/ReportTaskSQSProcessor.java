@@ -13,7 +13,7 @@ import static com.powerup.sqs.listener.constants.SQSLogConstants.ERROR_SENDING_E
 import static com.powerup.sqs.listener.constants.SQSLogConstants.RECEIVED_MESSAGE;
 
 @Slf4j
-@Service("listenerSqsReportTask")
+@Service("reportTaskQueueProcessor")
 @RequiredArgsConstructor
 public class ReportTaskSQSProcessor implements Function<Message, Mono<Void>> {
 
