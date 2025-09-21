@@ -21,10 +21,11 @@ public class SQSListener {
     private final SqsAsyncClient client;
     private final SQSProperties properties;
     private final Function<Message, Mono<Void>> processor;
+    private final String queueUrl;
     private String operation;
 
     public SQSListener start() {
-        this.operation = "MessageFrom:" + properties.approvedLoanQueueUrl();
+        this.operation = "MessageFrom:" + queueUrl;
         ExecutorService service = Executors.newFixedThreadPool(properties.numberOfThreads());
         Flux<Void> flow = listenRetryRepeat().publishOn(Schedulers.fromExecutorService(service));
         for (var i = 0; i < properties.numberOfThreads(); i++) {
@@ -64,7 +65,7 @@ public class SQSListener {
 
     private ReceiveMessageRequest getReceiveMessageRequest() {
         return ReceiveMessageRequest.builder()
-                .queueUrl(properties.approvedLoanQueueUrl())
+                .queueUrl(queueUrl)
                 .maxNumberOfMessages(properties.maxNumberOfMessages())
                 .waitTimeSeconds(properties.waitTimeSeconds())
                 .visibilityTimeout(properties.visibilityTimeoutSeconds())
@@ -73,7 +74,7 @@ public class SQSListener {
 
     private DeleteMessageRequest getDeleteMessageRequest(String receiptHandle) {
         return DeleteMessageRequest.builder()
-                .queueUrl(properties.approvedLoanQueueUrl())
+                .queueUrl(queueUrl)
                 .receiptHandle(receiptHandle)
                 .build();
     }

@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record SQSProperties(
         String region,
         String approvedLoanQueueUrl,
+        String reportTaskQueueUrl,
         int waitTimeSeconds,
         int visibilityTimeoutSeconds,
         int maxNumberOfMessages,

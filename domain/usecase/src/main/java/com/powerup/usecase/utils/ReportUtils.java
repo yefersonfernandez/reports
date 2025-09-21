@@ -1,5 +1,6 @@
 package com.powerup.usecase.utils;
 
+import com.powerup.model.report.EmailReport;
 import com.powerup.model.report.Report;
 import lombok.experimental.UtilityClass;
 
@@ -21,4 +22,12 @@ public class ReportUtils {
                 .totalAmountApproved(currentReport.getTotalAmountApproved().add(amountToAdd))
                 .build();
     }
+
+    public static EmailReport buildEmailReport(Report report) {
+        return EmailReport.builder()
+                .totalLoansApproved(report.getTotalLoansApproved())
+                .totalAmountApproved(report.getTotalAmountApproved())
+                .build();
+    }
+
 }

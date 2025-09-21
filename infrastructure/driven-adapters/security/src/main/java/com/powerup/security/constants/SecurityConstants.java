@@ -12,10 +12,10 @@ public class SecurityConstants {
     public static final String CLAIM_ROLE = "role";
     public static final String ROLE_ADMIN = "ADMIN";
 
-    public static final String REPORTS_URL = "/api/v1/reports";
-
+    public static final String ACTUATOR_HEALTH_URL = "/report/actuator/health";
+    public static final String REPORTS_URL = "/report/api/v1/reports";
     public static final String[] PUBLIC_SWAGGER_PATHS = {
-            "/api/doc/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**"
+            "/report/api/doc/**", "/report/v3/api-docs/**",
+            "/report/swagger-ui.html", "/report/swagger-ui/**"
     };
-
 }

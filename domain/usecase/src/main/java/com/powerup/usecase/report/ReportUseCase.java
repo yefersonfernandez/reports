@@ -3,7 +3,9 @@ package com.powerup.usecase.report;
 import com.powerup.model.approvedloan.ApprovedLoan;
 import com.powerup.model.approvedloan.gateways.IApprovedLoanRepositoryPort;
 import com.powerup.model.report.Report;
+import com.powerup.model.report.gateways.IEmailSenderPort;
 import com.powerup.model.report.gateways.IReportRepositoryPort;
+import com.powerup.usecase.utils.ReportUtils;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -15,6 +17,7 @@ public class ReportUseCase {
 
     private final IReportRepositoryPort reportRepositoryPort;
     private final IApprovedLoanRepositoryPort approvedLoanRepositoryPort;
+    private final IEmailSenderPort emailSenderPort;
 
     public Mono<Report> getReport() {
         return reportRepositoryPort.findReport();
@@ -30,6 +33,15 @@ public class ReportUseCase {
                                 .flatMap(reportRepositoryPort::saveReport)
                         )
                 )
+                .then();
+    }
+
+    public Mono<Void> sendReportEmail() {
+        return reportRepositoryPort.findReport()
+                .defaultIfEmpty(buildEmptyReport())
+                .map(ReportUtils::buildEmailReport)
+                .flatMap(emailSenderPort::sendEmail)
+                .log()
                 .then();
     }
 }
