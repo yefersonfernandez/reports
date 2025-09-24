@@ -55,7 +55,7 @@ jobs:
             -Dsonar.projectKey=yefersonfernandez_reports
             -Dsonar.organization=yefersonfernandez
             -Dsonar.sources=src
-            -Dsonar.tests=src/test
+            -Dsonar.tests=**/build/classes/java/test
             -Dsonar.java.binaries=**/build/classes/java/main
             -Dsonar.junit.reportsPath=**/build/test-results/test
             -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacocoMergedReport/jacocoMergedReport.xml
