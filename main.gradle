@@ -100,6 +100,41 @@ tasks.register('jacocoMergedReport', JacocoReport) {
         csv.setRequired false
         html.setRequired true
     }
+    classDirectories.setFrom(
+            files(subprojects.sourceSets.main.output).collect {
+                fileTree(dir: it, exclude: [
+                        '**/com/powerup/dynamodb/helper/**',
+                        '**/com/powerup/sqs/listener/helper/**',
+                        '**/com/powerup/api/exception/**',
+                        '**/com/powerup/api/openapi/**',
+                        '**/com/powerup/sqs/listener/**',
+                        '**/com/powerup/sqs/listener/config/**',
+                        '**/com/powerup/emailses/utils/**',
+                        '**/com/powerup/dynamodb/adapters/approvedloan/**',
+                        '**/com/powerup/dynamodb/entity/**',
+                        '**/com/powerup/enums/**',
+                        '**/com/powerup/dynamodb/adapters/report/**',
+                        '**/com/powerup/api/report/**',
+                        '**/com/powerup/emailses/**',
+                        '**/com/powerup/security/provider/**',
+                        '**/com/powerup/security/config/**',
+                        '**/com/powerup/security/constants/**',
+                        '**/com/powerup/security/exceptions/**',
+                        '**/com/powerup/security/jwt/**',
+                        '**/com/powerup/security/encoder/**',
+                        '**/com/powerup/emailses/config/**',
+                        '**/com/powerup/sqs/listener/mapper/**',
+                        '**/com/powerup/api/mapper/**',
+                        '**/com/powerup/exception/**',
+                        '**/com/powerup/dynamodb/config/**',
+                        '**/com/powerup/sqs/listener/dto/**',
+                        '**/com/powerup/api/dto/response/**',
+                        '**/com/powerup/*.class',
+                        '**/com/powerup/api/config/**',
+                        '**/com/powerup/config/**'
+                ])
+            }
+    )
 }
 
 tasks.withType(JavaCompile).configureEach {

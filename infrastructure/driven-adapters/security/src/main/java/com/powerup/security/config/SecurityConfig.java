@@ -20,8 +20,11 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.List;
 
+import static com.powerup.security.constants.SecurityConstants.ACTUATOR_HEALTH_URL;
 import static com.powerup.security.constants.SecurityConstants.CLAIM_ROLE;
 import static com.powerup.security.constants.SecurityConstants.PUBLIC_SWAGGER_PATHS;
+import static com.powerup.security.constants.SecurityConstants.REPORTS_URL;
+import static com.powerup.security.constants.SecurityConstants.ROLE_ADMIN;
 import static com.powerup.security.constants.SecurityConstants.ROLE_PREFIX;
 
 @Configuration
@@ -37,7 +40,9 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(HttpMethod.GET, ACTUATOR_HEALTH_URL).permitAll()
                         .pathMatchers(PUBLIC_SWAGGER_PATHS).permitAll()
+                        .pathMatchers(HttpMethod.GET, REPORTS_URL).hasAnyRole(ROLE_ADMIN)
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
