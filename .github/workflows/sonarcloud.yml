@@ -1,0 +1,58 @@
+name: SonarCloud Analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to analyze'
+        required: true
+        default: 'main'
+
+jobs:
+  build-and-sonar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      # 2. Configurar Java 21
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # 3. Cache de Gradle
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper/
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # 4. Ejecutar build con tests
+      - name: Build with Gradle
+        run: ./gradlew clean build jacocoTestReport pitest
+
+      # 5. SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectKey: 'yefersonfernandez_reports'       
+          organization: 'yefersonfernandez'           
+          token: ${{ secrets.SONAR_TOKEN }}
+          extraProperties: |
+            sonar.sources=src
+            sonar.tests=src/test
+            sonar.java.binaries=**/build/classes/java/main
+            sonar.junit.reportsPath=**/build/test-results/test
+            sonar.coverage.jacoco.xmlReportPaths=build/reports/jacocoMergedReport/jacocoMergedReport.xml
+            sonar.pitest.reportPaths=build/reports/pitest/mutations.xml
+            sonar.exclusions=**/MainApplication.java
