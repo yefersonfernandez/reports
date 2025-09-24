@@ -37,11 +37,15 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      # 4. Ejecutar build con tests
+      # 4. Dar permisos de ejecución a gradlew
+      - name: Give execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 5. Ejecutar build con tests
       - name: Build with Gradle
         run: ./gradlew clean build jacocoTestReport pitest
 
-      # 5. SonarCloud Scan
+      # 6. SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
