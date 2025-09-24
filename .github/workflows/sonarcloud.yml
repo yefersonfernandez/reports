@@ -48,15 +48,16 @@ jobs:
       # 6. SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectKey: 'yefersonfernandez_reports'       
-          organization: 'yefersonfernandez'           
-          token: ${{ secrets.SONAR_TOKEN }}
-          extraProperties: |
-            sonar.sources=src
-            sonar.tests=src/test
-            sonar.java.binaries=**/build/classes/java/main
-            sonar.junit.reportsPath=**/build/test-results/test
-            sonar.coverage.jacoco.xmlReportPaths=build/reports/jacocoMergedReport/jacocoMergedReport.xml
-            sonar.pitest.reportPaths=build/reports/pitest/mutations.xml
-            sonar.exclusions=**/MainApplication.java
+          args: >
+            -Dsonar.projectKey=yefersonfernandez_reports
+            -Dsonar.organization=yefersonfernandez
+            -Dsonar.sources=src
+            -Dsonar.tests=src/test
+            -Dsonar.java.binaries=**/build/classes/java/main
+            -Dsonar.junit.reportsPath=**/build/test-results/test
+            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacocoMergedReport/jacocoMergedReport.xml
+            -Dsonar.pitest.reportPaths=build/reports/pitest/mutations.xml
+            -Dsonar.exclusions=**/MainApplication.java
