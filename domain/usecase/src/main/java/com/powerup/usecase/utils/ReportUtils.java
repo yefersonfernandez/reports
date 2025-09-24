@@ -23,10 +23,12 @@ public class ReportUtils {
                 .build();
     }
 
-    public static EmailReport buildEmailReport(Report report) {
+    public static EmailReport buildEmailReport(Report report, String subject, String bodyHtml) {
         return EmailReport.builder()
                 .totalLoansApproved(report.getTotalLoansApproved())
                 .totalAmountApproved(report.getTotalAmountApproved())
+                .subject(subject)
+                .bodyHtml(bodyHtml)
                 .build();
     }
 

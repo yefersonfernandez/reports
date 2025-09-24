@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class EmailReport {
-    Long totalLoansApproved;
-    BigDecimal totalAmountApproved;
+    private Long totalLoansApproved;
+    private BigDecimal totalAmountApproved;
+    private String subject;
+    private String bodyHtml;
 }

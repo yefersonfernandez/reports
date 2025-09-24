@@ -32,3 +32,5 @@ include ':sqs-listener'
 project(':sqs-listener').projectDir = file('./infrastructure/entry-points/sqs-listener')
 include ':email-ses'
 project(':email-ses').projectDir = file('./infrastructure/driven-adapters/email-ses')
+include ':s3-repository'
+project(':s3-repository').projectDir = file('./infrastructure/driven-adapters/s3-repository')

@@ -2,9 +2,12 @@ package com.powerup.usecase.report;
 
 import com.powerup.model.approvedloan.ApprovedLoan;
 import com.powerup.model.approvedloan.gateways.IApprovedLoanRepositoryPort;
+import com.powerup.model.emailtemplate.EmailTemplate;
+import com.powerup.model.emailtemplate.gateways.IEmailTemplateRepositoryPort;
 import com.powerup.model.report.Report;
 import com.powerup.model.report.gateways.IEmailSenderPort;
 import com.powerup.model.report.gateways.IReportRepositoryPort;
+import com.powerup.model.s3.gateways.IS3TemplatePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,12 +35,18 @@ class ReportUseCaseTest {
     private IApprovedLoanRepositoryPort approvedLoanRepositoryPort;
     @Mock
     private IEmailSenderPort emailSenderPort;
+    @Mock
+    private IEmailTemplateRepositoryPort emailTemplateRepositoryPort;
+    @Mock
+    private IS3TemplatePort s3TemplatePort;
 
     @InjectMocks
     private ReportUseCase reportUseCase;
 
     private ApprovedLoan approvedLoan;
     private Report existingReport;
+    private String templateId;
+    private EmailTemplate emailTemplate;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +62,11 @@ class ReportUseCaseTest {
                 .totalLoansApproved(2L)
                 .totalAmountApproved(BigDecimal.valueOf(10000))
                 .build();
+
+        templateId = "template#1";
+        emailTemplate = new EmailTemplate();
+        emailTemplate.setS3Key("s3-key");
+        emailTemplate.setSubject("Reporte diario");
     }
 
     @Test
@@ -76,7 +90,6 @@ class ReportUseCaseTest {
         verify(approvedLoanRepositoryPort, never()).saveApprovedLoan(any());
         verify(reportRepositoryPort, never()).saveReport(any());
     }
-
 
     @Test
     @DisplayName("Must update report if loan does not exist and report exists")
@@ -106,9 +119,12 @@ class ReportUseCaseTest {
     @DisplayName("Must send report email when report exists")
     void testSendReportEmailWhenReportExists() {
         when(reportRepositoryPort.findReport()).thenReturn(Mono.just(existingReport));
+        when(emailTemplateRepositoryPort.getEmailTemplate(templateId)).thenReturn(Mono.just(emailTemplate));
+        when(s3TemplatePort.getTemplateHtml(emailTemplate.getS3Key()))
+                .thenReturn(Mono.just("<html>${totalLoansApproved} - ${totalAmountApproved}</html>"));
         when(emailSenderPort.sendEmail(any())).thenReturn(Mono.empty());
 
-        StepVerifier.create(reportUseCase.sendReportEmail())
+        StepVerifier.create(reportUseCase.sendReportEmail(templateId))
                 .verifyComplete();
 
         verify(emailSenderPort).sendEmail(any());
@@ -118,9 +134,12 @@ class ReportUseCaseTest {
     @DisplayName("Must send report email when no report exists (build empty report)")
     void testSendReportEmailWhenNoReportExists() {
         when(reportRepositoryPort.findReport()).thenReturn(Mono.empty());
+        when(emailTemplateRepositoryPort.getEmailTemplate(templateId)).thenReturn(Mono.just(emailTemplate));
+        when(s3TemplatePort.getTemplateHtml(emailTemplate.getS3Key()))
+                .thenReturn(Mono.just("<html>${totalLoansApproved} - ${totalAmountApproved}</html>"));
         when(emailSenderPort.sendEmail(any())).thenReturn(Mono.empty());
 
-        StepVerifier.create(reportUseCase.sendReportEmail())
+        StepVerifier.create(reportUseCase.sendReportEmail(templateId))
                 .verifyComplete();
 
         verify(emailSenderPort).sendEmail(any());

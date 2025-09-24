@@ -5,9 +5,6 @@ import com.powerup.model.report.EmailReport;
 import lombok.experimental.UtilityClass;
 import software.amazon.awssdk.services.ses.model.SendEmailRequest;
 
-import static com.powerup.emailses.constants.EmailConstants.BODY_TEMPLATE_HTML;
-import static com.powerup.emailses.constants.EmailConstants.SUBJECT;
-
 @UtilityClass
 public class SesEmailRequestBuilder {
 
@@ -15,17 +12,15 @@ public class SesEmailRequestBuilder {
         return SendEmailRequest.builder()
                 .source(sesProperties.sourceEmail())
                 .destination(destination -> destination.toAddresses(sesProperties.destinationEmail()))
-                .message(msg -> msg.subject(sub -> sub.data(SUBJECT))
+                .message(msg -> msg.subject(sub -> sub.data(report.getSubject()))
                         .body(body -> body.html(html -> html.data(buildReportBody(report))))
                 )
                 .build();
     }
 
     private static String buildReportBody(EmailReport report) {
-        return String.format(
-                BODY_TEMPLATE_HTML,
-                report.getTotalLoansApproved(),
-                report.getTotalAmountApproved()
-        );
+        return report.getBodyHtml()
+                .replace("${totalLoansApproved}", String.valueOf(report.getTotalLoansApproved()))
+                .replace("${totalAmountApproved}", String.valueOf(report.getTotalAmountApproved()));
     }
 }

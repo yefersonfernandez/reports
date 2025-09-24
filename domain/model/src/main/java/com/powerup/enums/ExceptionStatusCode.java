@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ExceptionStatusCode {
 
     UNAUTHORIZED(401),
-    FORBIDDEN(403);
+    FORBIDDEN(403),
+    INTERNAL_SERVER_ERROR(500);
 
     private final int statusCode;
 
